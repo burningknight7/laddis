@@ -1,0 +1,17 @@
+{
+  "name": "laddis",
+  "version": "1.0.0",
+  "description": "'Laddis Game'",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "laddis"
+  ],
+  "author": "burningknight7",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
