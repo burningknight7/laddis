@@ -4,7 +4,7 @@
   "description": "'Laddis Game'",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/*test.js"
   },
   "keywords": [
     "laddis"
@@ -12,6 +12,19 @@
   "author": "burningknight7",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
-  }
+    "express": "^4.17.1",
+    "mongodb": "^3.6.6"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/burningknight7/laddis.git"
+  },
+  "bugs": {
+    "url": "https://github.com/burningknight7/laddis/issues"
+  },
+  "homepage": "https://github.com/burningknight7/laddis#readme"
 }
