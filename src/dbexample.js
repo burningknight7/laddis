@@ -7,6 +7,11 @@ async function listDatabases(client){
     databasesList.databases.forEach(db => console.log(` - ${db.name}`));
 };
 
+async function createListing(client, newListing){
+    const result = await client.db("sample_airbnb").collection("listingsAndReviews").insertOne(newListing);
+    console.log(`New listing created with the following id: ${result.insertedId}`);
+};
+
 async function main(){
     /**
      * Connection URI. Update <username>, <password>, and <your-cluster-url> to reflect your cluster.
@@ -23,6 +28,15 @@ async function main(){
  
         // Make the appropriate DB calls
         await  listDatabases(client);
+
+        const newListing = {
+            name: "Lovely Loft",
+            summary: "A charming loft in Paris",
+            bedrooms: 1,
+            bathrooms: 1
+        };
+
+        await createListing(client, newListing);
  
     } catch (e) {
         console.error(e);
@@ -31,4 +45,4 @@ async function main(){
     }
 }
 
-main().catch(console.error);
+//main().catch(console.error);
