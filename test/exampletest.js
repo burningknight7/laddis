@@ -18,26 +18,20 @@ describe('Add', () => {
     describe('Game' , () => {
 
         before((done) => {
-            //this.timeout(0);
             client.connect().then((message) => {
                 client.db("laddis").collection("games").deleteMany({}).then((resolve) => {
                     done();
                 }).catch((error) => {
-                    console.log(error);
+                    throw error;
                 });
             });
         });
 
-        it('should add a game successfully', (done) => {
+        it('should add a game successfully', async () => {
             const gamePin = 3123;
-            const playerId = "player1";
-            //assert.strictEqual(c, 2);
-            gamesdb.addGame(client, gamePin, playerId).then(
-                (result) => {
-                    assert.strictEqual(result , true);
-                    done();
-                }
-            );
+            let playerId = "player1";
+            let result = await gamesdb.addGame(client, gamePin, playerId);
+            assert.strictEqual(result, true);
         });
 
         it('should add a new player to a game successfully', (done) => {
@@ -48,15 +42,44 @@ describe('Add', () => {
                     assert.strictEqual(result, true);
                     done();
                 }
-            );
+            ).catch((error) => {
+                assert.fail();
+            });
         });
 
-        it('should throw an error', () => {
+        it('should throw an error', (done) => {
             const gamePin = 3123;
             const playerId = "player2";
-            assert.throws(async () => {
-                let result = await gamesdb.addPlayer(client, gamePin, playerId);
-            }, Error);
+            let result = 1;
+            gamesdb.addPlayer(client, gamePin, playerId).then(
+                (document) => {
+                    if(document != null) {
+                        assert.fail();
+                    }
+                    done();
+                }
+            ).catch((error) => {
+                result = 2;
+                assert.strictEqual(result, 2);
+                done();
+            });
+        });
+
+        it('should throw an errror when max players reach more than 4', async () => {
+            const gamePin = 3123;
+            let result = await client.db('laddis').collection('games').findOneAndUpdate(
+                {gamepin : gamePin, over: false},
+                { $push : { players : { $each : ['player3' , 'player4'] } } }
+            );
+            assert.notStrictEqual(result, null);
+            let goterror = false;
+            try {
+            result = await gamesdb.addPlayer(client, gamePin , 'player5');
+            }catch(error) {
+                assert.strictEqual(error, 'Max players reached');
+                goterror = true;
+            }
+            assert.strictEqual(goterror, true);
         });
     });
 });

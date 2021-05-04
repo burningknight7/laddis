@@ -44,21 +44,21 @@ async function addPlayer(client, gamePin, playerId) {
 
     const games = client.db("laddis").collection("games");
 
-    games.findOne({
-        gamepin : gamePin,
-        over : false,
-        players : {
-            $in : [playerId]
-        }
-    }).then((document) => result = document);
+    result = await games.findOne({
+        gamepin : gamePin, 
+        over : false
+    });
 
-    if(result) {
-        throw 'Player already joined'
+    if(result && result.players && result.players.length >= 4) {
+            throw 'Max players reached';
+    }
+    else if(result == null) {
+        throw 'No such game going on';
     }
 
     result = await games.findOneAndUpdate(
         { gamepin : gamePin, over : false },
-        { $push : { players : playerId } }
+        { $addToSet : { players : playerId } }
     );
     
     if(result) {
