@@ -1,5 +1,7 @@
 exports.addGame = addGame;
 exports.addPlayer = addPlayer;
+exports.addTeams = addTeams;
+exports.addMatch = addMatch;
 
 async function addGame(client, gamePin, playerId) {
     
@@ -23,9 +25,8 @@ async function addGame(client, gamePin, playerId) {
     result = await games.insertOne(
        {
            gamepin: gamePin,
-           matches: null,
+           matches: [],
            players: [playerId],
-           matches: null,
            teams : null,
            result: null,
            over: false
@@ -66,5 +67,33 @@ async function addPlayer(client, gamePin, playerId) {
     }
 
     return false;
+}
+
+async function addTeams(client, gamePin, teams) {
+    let result = null;
+    const games = client.db('laddis').collection('games');
+    result = await games.findOneAndUpdate({
+        gamepin : gamePin, 
+        over : false, 
+        teams : null
+    },
+    {
+        $set : { teams : teams }
+    });
+    return result.lastErrorObject.updatedExisting;
+}
+
+async function addMatch(client, gamePin, match) {
+    let result = null;
+    const games = client.db('laddis').collection('games');
+    result = await games.findOneAndUpdate({
+        gamepin : gamePin, 
+        over : false, 
+        teams : { $ne : null}
+    },
+    {
+        $push : { matches : match}
+    });
+    return result.lastErrorObject.updatedExisting;
 }
 

@@ -5,6 +5,7 @@ const {MongoClient} = require('mongodb');
 
 const uri = "mongodb+srv://tanay710:TTvkjb710@cluster0.npp0a.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const client = new MongoClient(uri);
+const gamePin = 3123;
 
 describe('Array' , () => {
     describe('#indexOf' , () => {
@@ -28,15 +29,13 @@ describe('Add', () => {
         });
 
         it('should add a game successfully', async () => {
-            const gamePin = 3123;
             let playerId = "player1";
             let result = await gamesdb.addGame(client, gamePin, playerId);
             assert.strictEqual(result, true);
         });
 
         it('should add a new player to a game successfully', (done) => {
-            const gamePin = 3123;
-            const playerId = "player2";
+            let playerId = "player2";
             gamesdb.addPlayer(client, gamePin, playerId).then(
                 (result) => {
                     assert.strictEqual(result, true);
@@ -48,8 +47,7 @@ describe('Add', () => {
         });
 
         it('should throw an error', (done) => {
-            const gamePin = 3123;
-            const playerId = "player2";
+            let playerId = "player2";
             let result = 1;
             gamesdb.addPlayer(client, gamePin, playerId).then(
                 (document) => {
@@ -66,7 +64,6 @@ describe('Add', () => {
         });
 
         it('should throw an errror when max players reach more than 4', async () => {
-            const gamePin = 3123;
             let result = await client.db('laddis').collection('games').findOneAndUpdate(
                 {gamepin : gamePin, over: false},
                 { $push : { players : { $each : ['player3' , 'player4'] } } }
@@ -80,6 +77,43 @@ describe('Add', () => {
                 goterror = true;
             }
             assert.strictEqual(goterror, true);
+        });
+
+        it('should add a team successfully' , async () => {
+            let teams = {
+                'team1' : [0, 2],
+                'team2' : [1, 3]
+            };
+            let result = await gamesdb.addTeams(client, gamePin, teams);
+            assert.strictEqual(result, true);
+        });
+
+        it('should not change a team' , async () => {
+            let teams = {
+                'team1' : [0, 3],
+                'team2' : [1, 2]
+            };
+            let result = await gamesdb.addTeams(client, gamePin, teams);
+            assert.strictEqual(result, false);
+        });
+
+        it('should add the a match correctly', async () => {
+            let cards = []
+            for(let i = 0; i < 16; i++) {
+                cards.push('Card '+(i+1));
+            }
+            let match = 
+                {
+                    'cards' : cards, 
+                    'bets' : null,
+                    'round1' : null, 
+                    'round2' : null, 
+                    'round3' : null, 
+                    'round4' : null,
+                    'winner' : null
+                };
+            let result = await gamesdb.addMatch(client, gamePin, match);
+            assert.strictEqual(result, true);
         });
     });
 });
