@@ -83,9 +83,21 @@ async function addTeams(client, gamePin, teams) {
     return result.lastErrorObject.updatedExisting;
 }
 
-async function addMatch(client, gamePin, match) {
+async function addMatch(client, gamePin, cards) {
     let result = null;
     const games = client.db('laddis').collection('games');
+    const initBet = { vakkhai : -1, value : 0};
+    const initPlay = {bet : [ initBet, initBet, initBet, initBet] , winner : null};
+    let match = 
+                {
+                    'cards' : cards, 
+                    'bets' : initPlay,
+                    'round1' : initPlay, 
+                    'round2' : initPlay, 
+                    'round3' : initPlay, 
+                    'round4' : initPlay,
+                    'winner' : null
+                };
     result = await games.findOneAndUpdate({
         gamepin : gamePin, 
         over : false, 
@@ -95,5 +107,18 @@ async function addMatch(client, gamePin, match) {
         $push : { matches : match}
     });
     return result.lastErrorObject.updatedExisting;
+}
+
+async function setBet(client, gamePin, index, bet) {
+    const games = client.db('laddis').collection('games');
+    let { matches } = await games.findOne({
+        gamepin: gamePin, 
+        over : false, 
+        teams : { $ne : null}
+    });
+    if(matches && matches.length > 0 && matches[matches.length - 1].bets == null) {
+        
+    }
+    return false;
 }
 

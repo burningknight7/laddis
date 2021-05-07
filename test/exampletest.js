@@ -112,9 +112,11 @@ describe('Add', () => {
                     'round4' : null,
                     'winner' : null
                 };
-            let result = await gamesdb.addMatch(client, gamePin, match);
+            let result = await gamesdb.addMatch(client, gamePin, cards);
             assert.strictEqual(result, true);
         });
+
+        it('should add a bet correctly')
     });
 });
 
