@@ -102,21 +102,13 @@ describe('Add', () => {
             for(let i = 0; i < 16; i++) {
                 cards.push('Card '+(i+1));
             }
-            let match = 
-                {
-                    'cards' : cards, 
-                    'bets' : null,
-                    'round1' : null, 
-                    'round2' : null, 
-                    'round3' : null, 
-                    'round4' : null,
-                    'winner' : null
-                };
             let result = await gamesdb.addMatch(client, gamePin, cards);
             assert.strictEqual(result, true);
         });
 
-        it('should add a bet correctly')
+        it('should add a bet correctly', async () => {
+            
+        });
     });
 });
 

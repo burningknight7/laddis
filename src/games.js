@@ -87,17 +87,18 @@ async function addMatch(client, gamePin, cards) {
     let result = null;
     const games = client.db('laddis').collection('games');
     const initBet = { vakkhai : -1, value : 0};
+    const initRound = { cards : [null, null, null, null], winner : null}
     const initPlay = {bet : [ initBet, initBet, initBet, initBet] , winner : null};
     let match = 
                 {
                     'cards' : cards, 
                     'bets' : initPlay,
-                    'round1' : initPlay, 
-                    'round2' : initPlay, 
-                    'round3' : initPlay, 
-                    'round4' : initPlay,
+                    'round1' : initRound, 
+                    'round2' : initRound, 
+                    'round3' : initRound, 
+                    'round4' : initRound,
                     'winner' : null
-                };
+                };          
     result = await games.findOneAndUpdate({
         gamepin : gamePin, 
         over : false, 
@@ -117,7 +118,7 @@ async function setBet(client, gamePin, index, bet) {
         teams : { $ne : null}
     });
     if(matches && matches.length > 0 && matches[matches.length - 1].bets == null) {
-        
+        console.log("hello world boii");
     }
     return false;
 }
